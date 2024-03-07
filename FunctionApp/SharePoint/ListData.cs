@@ -1,19 +1,13 @@
-using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
-using System.Net.Http.Headers;
-using Microsoft.Graph.Auth;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.Extensions.Options;
+using Microsoft.Graph;
+using Plumsail.DataSource.SharePoint.Settings;
 
 namespace Plumsail.DataSource.SharePoint
 {
@@ -22,31 +16,56 @@ namespace Plumsail.DataSource.SharePoint
         private readonly Settings.ListData _settings;
         private readonly GraphServiceClientProvider _graphProvider;
 
-        public ListData(IOptions<Settings.AppSettings> settings, GraphServiceClientProvider graphProvider)
+        public ListData(IOptions<AppSettings> settings, GraphServiceClientProvider graphProvider)
         {
             _settings = settings.Value.ListData;
             _graphProvider = graphProvider;
         }
 
-        [FunctionName("SharePoint-ListData")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+        [FunctionName("Companies")]
+        public async Task<IActionResult> GetCompanies(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "companies")] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("ListData is requested.");
+            log.LogInformation("Companies list is requested.");
 
             var graph = _graphProvider.Create();
-            var list = await graph.GetListAsync(_settings.SiteUrl, _settings.ListName);
+            var list = await graph.GetListAsync(_settings.SiteUrl, _settings.CompaniesListName);
 
-            var queryOptions = new List<QueryOption>()
+            return new OkObjectResult(await GetListItems(list, new List<QueryOption>
             {
-                //new QueryOption("filter", "fields/Title eq 'item 1'"),
-                new QueryOption("select", "id"),
-                new QueryOption("expand", "fields(select=Title,Author)")
-            };
+                new("select", "id"),
+                new("expand", "fields(select=Title)"),
+            }));
+        }
+
+        [FunctionName("Employees")]
+        public async Task<IActionResult> GetEmployees(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "companies/{companyId}/employees")] HttpRequest req,
+            string companyId, ILogger log)
+        {
+            log.LogInformation("Employees list is requested.");
+
+            var graph = _graphProvider.Create();
+            var list = await graph.GetListAsync(_settings.SiteUrl, _settings.EmployeesListName);
+
+            return new OkObjectResult(await GetListItems(list, new List<QueryOption>
+            {
+                new("select", "id"),
+                new("expand", "fields(select=Title,CompanyLookupId,CSCS)"),
+                new("filter", $"fields/CompanyLookupId eq '{companyId}'")
+            }));
+        }
+
+        private static async Task<List<ListItem>> GetListItems(IListRequestBuilder list, List<QueryOption> queryOptions)
+        {
+            var request = list.Items
+                .Request(queryOptions);
+
             var itemsPage = await list.Items
                 .Request(queryOptions)
                 .GetAsync();
+
             var items = new List<ListItem>(itemsPage);
 
             while (itemsPage.NextPageRequest != null)
@@ -55,7 +74,7 @@ namespace Plumsail.DataSource.SharePoint
                 items.AddRange(itemsPage);
             }
 
-            return new OkObjectResult(items);
+            return items;
         }
     }
 }
