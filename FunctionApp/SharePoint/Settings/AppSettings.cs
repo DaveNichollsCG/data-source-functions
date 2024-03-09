@@ -18,6 +18,7 @@
     {
         public string SiteUrl { get; set; }
         public string CompaniesListName { get; set; }
-        public string EmployeesListName { get; set; }
+        public string OperativeListName { get; set; }
+        public string RegisterListName { get; set; }
     }
 }

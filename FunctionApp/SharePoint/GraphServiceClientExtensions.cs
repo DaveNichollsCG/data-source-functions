@@ -10,11 +10,16 @@ namespace Plumsail.DataSource.SharePoint
     {
         internal static async Task<IListRequestBuilder> GetListAsync(this GraphServiceClient graph, string siteUrl, string listName)
         {
+            bool ListSelector(List list)
+            {
+                return list.Name == listName || list.DisplayName == listName;
+            }
+
             var url = new Uri(siteUrl);
             var queryOptions = new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "lists(select=id,name)")
+                new("expand", "lists(select=id,Name,DisplayName)")
             };
 
             var site = await graph.Sites.GetByPath(url.AbsolutePath, url.Host)
@@ -22,12 +27,12 @@ namespace Plumsail.DataSource.SharePoint
                 .GetAsync();
 
             var listsPage = site.Lists;
-            var list = listsPage.FirstOrDefault(list => list.Name == listName);
+            var list = listsPage.FirstOrDefault(ListSelector);
 
             while (list == null && listsPage.NextPageRequest != null)
             {
                 listsPage = await listsPage.NextPageRequest.GetAsync();
-                list = listsPage.FirstOrDefault(l => l.Name == listName);
+                list = listsPage.FirstOrDefault(ListSelector);
             }
 
             return list != null

@@ -13,10 +13,11 @@ namespace Plumsail.DataSource.FunctionApp
         public override void Configure(IFunctionsHostBuilder builder)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
-              .SetBasePath(Environment.CurrentDirectory)
-              .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
-              .AddEnvironmentVariables()
-              .Build();
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
 
             builder.Services.Configure<SP.Settings.AppSettings>(configuration);
             builder.Services.AddTransient<SP.GraphServiceClientProvider>();
