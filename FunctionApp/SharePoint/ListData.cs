@@ -60,7 +60,7 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,CompanyLookupId,CSCS)"),
+                new("expand", "fields(select=Title,CSCS)"),
                 new("filter", $"fields/CompanyLookupId eq '{companyId}'"),
                 new("orderby", "fields/Title")
             }));
@@ -82,7 +82,7 @@ namespace Plumsail.DataSource.SharePoint
             var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,CurrentStatus,Company,CompanyLookupId,CSCS)"),
+                new("expand", "fields(select=Company,CompanyLookupId)"),
                 new("filter", $"fields/Site eq '{siteName}' and fields/CurrentStatus eq 'In'"),
                 new("orderby", "fields/Company")
             });
@@ -103,14 +103,16 @@ namespace Plumsail.DataSource.SharePoint
             var graph = _graphProvider.Create();
             var list = await graph.GetListAsync(_settings.SiteUrl, _settings.RegisterListName);
 
-            return new OkObjectResult(await list.GetListItems(new List<QueryOption>
+            var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,CurrentStatus,Company,CompanyLookupId,CSCS)"),
+                new("expand", "fields(select=Title)"),
                 new("filter",
                     $"fields/Site eq '{siteName}' and fields/CompanyLookupId eq '{companyId}' and fields/CurrentStatus eq 'In'"),
                 new("orderby", "fields/Title")
-            }));
+            });
+
+            return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Title"]));
         }
     }
 }
