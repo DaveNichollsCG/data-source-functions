@@ -23,6 +23,9 @@ namespace Plumsail.DataSource.SharePoint
             _graphProvider = graphProvider;
         }
 
+        /// <summary>
+        /// Function to retrieve all companies.
+        /// </summary>
         [FunctionName("GetCompanies")]
         public async Task<IActionResult> GetCompanies(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-companies")] HttpRequest req,
@@ -33,7 +36,7 @@ namespace Plumsail.DataSource.SharePoint
             var graph = _graphProvider.Create();
             var list = await graph.GetListAsync(_settings.SiteUrl, _settings.CompaniesListName);
 
-            return new OkObjectResult(await GetListItems(list, new List<QueryOption>
+            return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
@@ -41,6 +44,9 @@ namespace Plumsail.DataSource.SharePoint
             }));
         }
 
+        /// <summary>
+        /// Function to retrieve employees of a specific company.
+        /// </summary>
         [FunctionName("GetEmployees")]
         public async Task<IActionResult> GetEmployees(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-companies/{companyId}/employees")] HttpRequest req,
@@ -51,7 +57,7 @@ namespace Plumsail.DataSource.SharePoint
             var graph = _graphProvider.Create();
             var list = await graph.GetListAsync(_settings.SiteUrl, _settings.OperativeListName);
 
-            return new OkObjectResult(await GetListItems(list, new List<QueryOption>
+            return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title,CompanyLookupId,CSCS)"),
@@ -60,6 +66,9 @@ namespace Plumsail.DataSource.SharePoint
             }));
         }
 
+        /// <summary>
+        /// Function to retrieve signed-in companies for a specific site.
+        /// </summary>
         [FunctionName("GetSignedInCompanies")]
         public async Task<IActionResult> GetSignedInCompanies(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "sites/{siteName}/signed-in-companies")] HttpRequest req,
@@ -70,7 +79,7 @@ namespace Plumsail.DataSource.SharePoint
             var graph = _graphProvider.Create();
             var list = await graph.GetListAsync(_settings.SiteUrl, _settings.RegisterListName);
 
-            var listItems = await GetListItems(list, new List<QueryOption>
+            var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title,CurrentStatus,Company,CompanyLookupId,CSCS)"),
@@ -81,6 +90,9 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Company"]));
         }
 
+        /// <summary>
+        /// Function to retrieve signed-in employees for a specific company and site.
+        /// </summary>
         [FunctionName("GetSignedInEmployees")]
         public async Task<IActionResult> GetSignedInEmployees(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "sites/{siteName}/companies/{companyId}/signed-in-employees")] HttpRequest req,
@@ -91,30 +103,14 @@ namespace Plumsail.DataSource.SharePoint
             var graph = _graphProvider.Create();
             var list = await graph.GetListAsync(_settings.SiteUrl, _settings.RegisterListName);
 
-            return new OkObjectResult(await GetListItems(list, new List<QueryOption>
+            return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title,CurrentStatus,Company,CompanyLookupId,CSCS)"),
-                new("filter", $"fields/Site eq '{siteName}' and fields/CompanyLookupId eq '{companyId}' and fields/CurrentStatus eq 'In'"),
+                new("filter",
+                    $"fields/Site eq '{siteName}' and fields/CompanyLookupId eq '{companyId}' and fields/CurrentStatus eq 'In'"),
                 new("orderby", "fields/Title")
             }));
-        }
-
-        private static async Task<List<ListItem>> GetListItems(IListRequestBuilder list, List<QueryOption> queryOptions)
-        {
-            var itemsPage = await list.Items
-                .Request(queryOptions)
-                .GetAsync();
-
-            var items = new List<ListItem>(itemsPage);
-
-            while (itemsPage.NextPageRequest != null)
-            {
-                itemsPage = await itemsPage.NextPageRequest.GetAsync();
-                items.AddRange(itemsPage);
-            }
-
-            return items;
         }
     }
 }

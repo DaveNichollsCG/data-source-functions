@@ -39,5 +39,22 @@ namespace Plumsail.DataSource.SharePoint
                 ? graph.Sites[site.Id].Lists[list.Id]
                 : null;
         }
+
+        internal static async Task<List<ListItem>> GetListItems(this IListRequestBuilder list, List<QueryOption> queryOptions)
+        {
+            var itemsPage = await list.Items
+                .Request(queryOptions)
+                .GetAsync();
+
+            var items = new List<ListItem>(itemsPage);
+
+            while (itemsPage.NextPageRequest != null)
+            {
+                itemsPage = await itemsPage.NextPageRequest.GetAsync();
+                items.AddRange(itemsPage);
+            }
+
+            return items;
+        }
     }
 }

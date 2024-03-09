@@ -24,12 +24,11 @@ public class GraphServiceClientProvider
             .WithTenantId(_azureAppSettings.Tenant)
             .Build();
 
-        var token = confidentialClientApplication
-            .AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" })
-            .ExecuteAsync().Result.AccessToken;
-
         return new GraphServiceClient(new DelegateAuthenticationProvider(request =>
         {
+            var token = confidentialClientApplication
+                .AcquireTokenForClient(new[] { "https://graph.microsoft.com/.default" })
+                .ExecuteAsync().Result.AccessToken;
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return Task.CompletedTask;
         }));
