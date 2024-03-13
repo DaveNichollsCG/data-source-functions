@@ -50,7 +50,7 @@ namespace Plumsail.DataSource.SharePoint
         [FunctionName("GetEmployees")]
         public async Task<IActionResult> GetEmployees(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-companies/{companyId}/employees")] HttpRequest req,
-            string companyId, ILogger log)
+            string company, ILogger log)
         {
             log.LogInformation("Employees list is requested.");
 
@@ -61,7 +61,7 @@ namespace Plumsail.DataSource.SharePoint
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title,CSCS)"),
-                new("filter", $"fields/CompanyLookupId eq '{companyId}'"),
+                new("filter", $"fields/Company eq '{company}'"),
                 new("orderby", "fields/Title")
             }));
         }
@@ -82,7 +82,7 @@ namespace Plumsail.DataSource.SharePoint
             var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Company,CompanyLookupId)"),
+                new("expand", "fields(select=Company)"),
                 new("filter", $"fields/Site eq '{siteName}' and fields/CurrentStatus eq 'In'"),
                 new("orderby", "fields/Company")
             });
@@ -96,7 +96,7 @@ namespace Plumsail.DataSource.SharePoint
         [FunctionName("GetSignedInEmployees")]
         public async Task<IActionResult> GetSignedInEmployees(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "sites/{siteName}/companies/{companyId}/signed-in-employees")] HttpRequest req,
-            string siteName, string companyId, ILogger log)
+            string siteName, string company, ILogger log)
         {
             log.LogInformation("Signed In employees list is requested.");
 
@@ -108,7 +108,7 @@ namespace Plumsail.DataSource.SharePoint
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
                 new("filter",
-                    $"fields/Site eq '{siteName}' and fields/CompanyLookupId eq '{companyId}' and fields/CurrentStatus eq 'In'"),
+                    $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In'"),
                 new("orderby", "fields/Title")
             });
 
