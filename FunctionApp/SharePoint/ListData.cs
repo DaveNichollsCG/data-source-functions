@@ -49,7 +49,7 @@ namespace Plumsail.DataSource.SharePoint
         /// </summary>
         [FunctionName("GetEmployees")]
         public async Task<IActionResult> GetEmployees(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-companies/{companyId}/employees")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-companies/{company}/employees")] HttpRequest req,
             string company, ILogger log)
         {
             log.LogInformation("Employees list is requested.");
@@ -95,7 +95,7 @@ namespace Plumsail.DataSource.SharePoint
         /// </summary>
         [FunctionName("GetSignedInEmployees")]
         public async Task<IActionResult> GetSignedInEmployees(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "sites/{siteName}/companies/{companyId}/signed-in-employees")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "sites/{siteName}/companies/{company}/signed-in-employees")] HttpRequest req,
             string siteName, string company, ILogger log)
         {
             log.LogInformation("Signed In employees list is requested.");
