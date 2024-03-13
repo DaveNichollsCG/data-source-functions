@@ -83,7 +83,7 @@ namespace Plumsail.DataSource.SharePoint
             {
                 new("select", "id"),
                 new("expand", "fields(select=Company)"),
-                new("filter", $"fields/Site eq '{siteName}' and fields/CurrentStatus eq 'In'"),
+                new("filter", $"fields/Site eq '{siteName}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
                 new("orderby", "fields/Company")
             });
 
@@ -108,7 +108,7 @@ namespace Plumsail.DataSource.SharePoint
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
                 new("filter",
-                    $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In'"),
+                    $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
                 new("orderby", "fields/Title")
             });
 
