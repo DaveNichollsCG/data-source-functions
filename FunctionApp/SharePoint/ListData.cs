@@ -60,8 +60,8 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,CSCS)"),
-                new("filter", $"fields/Company eq '{company}'"),
+                new("expand", "fields(select=Title,field_2)"),
+                new("filter", $"fields/field_1 eq '{company}'"),
                 new("orderby", "fields/Title")
             }));
         }
