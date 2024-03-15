@@ -82,7 +82,7 @@ namespace Plumsail.DataSource.SharePoint
             var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Company)"),
+                new("expand", "fields(select=field_3)"), //"fields(select=Company)"),
                 new("filter", $"fields/field_0 eq '{siteName}' and fields/field_8 eq 'In' and fields/field_3 ne null"), // /Site eq '{siteName}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
                 new("orderby", "fields/field_3")
             });
