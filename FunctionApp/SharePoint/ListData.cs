@@ -87,7 +87,7 @@ namespace Plumsail.DataSource.SharePoint
                 new("orderby", "fields/field_3")
             });
 
-            return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Company"]));
+            return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["field_3"])); //OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Company"]));
         }
 
         /// <summary>
