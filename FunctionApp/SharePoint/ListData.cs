@@ -83,8 +83,8 @@ namespace Plumsail.DataSource.SharePoint
             {
                 new("select", "id"),
                 new("expand", "fields(select=Company)"),
-                new("filter", $"fields/Site eq '{siteName}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
-                new("orderby", "fields/Company")
+                new("filter", $"fields/field_0 eq '{siteName}' and fields/field_8 eq 'In' and fields/field_3 ne null"), // /Site eq '{siteName}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
+                new("orderby", "fields/field_3")
             });
 
             return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Company"]));
@@ -108,7 +108,7 @@ namespace Plumsail.DataSource.SharePoint
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
                 new("filter",
-                    $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
+                    $"fields/field_0 eq '{siteName}' and fields/field_3 eq '{company}' and fields/field_8 eq 'In' and fields/Title ne null"), // $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
                 new("orderby", "fields/Title")
             });
 
