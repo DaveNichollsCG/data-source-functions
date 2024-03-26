@@ -107,7 +107,7 @@ namespace Plumsail.DataSource.SharePoint
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
-                new("expand", "fields(select=field_5)"), // added field to capture OperativeID in Column1
+//                new("expand", "fields(select=field_5)"), // added field to capture OperativeID in Column1
                 new("filter",
                     $"fields/field_0 eq '{siteName}' and fields/field_3 eq '{company}' and fields/field_8 eq 'In' and fields/Title ne null"), // $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
                 new("orderby", "fields/Title")
