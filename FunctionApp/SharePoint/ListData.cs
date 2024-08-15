@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -61,7 +62,7 @@ namespace Plumsail.DataSource.SharePoint
             {
                 new("select", "id"),
                 new("expand", "fields(select=Title,CSCS)"),
-                new("filter", $"fields/Company eq '{company}'"),
+                new("filter", $"fields/Company eq '{HttpUtility.UrlEncode(company)}'"),
                 new("orderby", "fields/Title")
             }));
         }
@@ -83,7 +84,7 @@ namespace Plumsail.DataSource.SharePoint
             {
                 new("select", "id"),
                 new("expand", "fields(select=Company)"),
-                new("filter", $"fields/Site eq '{siteName}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
+                new("filter", $"fields/Site eq '{HttpUtility.UrlEncode(siteName)}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
                 new("orderby", "fields/Company")
             });
 
@@ -108,7 +109,7 @@ namespace Plumsail.DataSource.SharePoint
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
                 new("filter",
-                    $"fields/Site eq '{siteName}' and fields/Company eq '{company}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
+                    $"fields/Site eq '{HttpUtility.UrlEncode(siteName)}' and fields/Company eq '{HttpUtility.UrlEncode(company)}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
                 new("orderby", "fields/Title")
             });
 
