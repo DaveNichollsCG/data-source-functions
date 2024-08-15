@@ -40,4 +40,4 @@ jobs:
           app-name: 'jusper-test-app1'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BA25E09F553443B2A37FD3C37A3EC012 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3EA14E39BC604C9B925D6F2F951FB2AC }}
