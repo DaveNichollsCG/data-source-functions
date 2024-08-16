@@ -61,8 +61,8 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,CSCS)"),
-                new("filter", $"fields/Company eq '{HttpUtility.UrlEncode(company)}'"),
+                new("expand", "fields(select=Title,field_2)"),
+                new("filter", $"fields/field_1 eq '{HttpUtility.UrlEncode(company)}'"),
                 new("orderby", "fields/Title")
             }));
         }
@@ -83,12 +83,12 @@ namespace Plumsail.DataSource.SharePoint
             var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Company)"),
-                new("filter", $"fields/Site eq '{HttpUtility.UrlEncode(siteName)}' and fields/CurrentStatus eq 'In' and fields/Company ne null"),
-                new("orderby", "fields/Company")
+                new("expand", "fields(select=field_3)"),
+                new("filter", $"fields/field_0 eq '{HttpUtility.UrlEncode(siteName)}' and fields/field_8 eq 'In' and fields/field_3 ne null"),
+                new("orderby", "fields/field_3")
             });
 
-            return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Company"]));
+            return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["field_3"]));
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Plumsail.DataSource.SharePoint
                 new("select", "id"),
                 new("expand", "fields(select=Title)"),
                 new("filter",
-                    $"fields/Site eq '{HttpUtility.UrlEncode(siteName)}' and fields/Company eq '{HttpUtility.UrlEncode(company)}' and fields/CurrentStatus eq 'In' and fields/Title ne null"),
+                    $"fields/field_0 eq '{HttpUtility.UrlEncode(siteName)}' and fields/field_3 eq '{HttpUtility.UrlEncode(company)}' and fields/field_8 eq 'In' and fields/Title ne null"),
                 new("orderby", "fields/Title")
             });
 
