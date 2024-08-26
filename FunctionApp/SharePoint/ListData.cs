@@ -107,7 +107,7 @@ namespace Plumsail.DataSource.SharePoint
             var listItems = await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title)"),
+                new("expand", "fields(select=Title,field_5)"),
                 new("filter",
                     $"fields/field_0 eq '{HttpUtility.UrlEncode(siteName)}' and fields/field_3 eq '{HttpUtility.UrlEncode(company)}' and fields/field_8 eq 'In' and fields/Title ne null"),
                 new("orderby", "fields/Title")
