@@ -61,7 +61,7 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,field_2)"),
+                new("expand", "fields(select=Title,field_2,CSCSGracePeriod)"),
                 new("filter", $"fields/field_1 eq '{HttpUtility.UrlEncode(company)}'"),
                 new("orderby", "fields/Title")
             }));
