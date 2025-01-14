@@ -28,7 +28,7 @@ namespace Plumsail.DataSource.SharePoint
         /// Function to retrieve all site info. added 14/01/2025
         /// </summary>
         [FunctionName("GetSites")]
-        public async Task<IActionResult> GetCompanies(
+        public async Task<IActionResult> GetSites(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-sites")] HttpRequest req,
             ILogger log)
         {
