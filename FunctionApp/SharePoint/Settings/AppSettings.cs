@@ -17,7 +17,7 @@
     public class ListData
     {
         public string SiteUrl { get; set; }
-        public string MasterSiteUrl { get; set; }
+        public string MasterSiteURL { get; set; }
         public string CompaniesListName { get; set; }
         public string SiteListName { get; set; }
         public string OperativeListName { get; set; }
