@@ -40,7 +40,7 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(await list.GetListItems(new List<QueryOption>
             {
                 new("select", "id"),
-                new("expand", "fields(select=Title,SiteName,GPSCoordinates)"),
+                new("expand", "fields(select=SiteName,GPSCoordinates)"),
                 new("orderby", "fields/SiteName")
             }));
         }
