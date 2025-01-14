@@ -25,6 +25,28 @@ namespace Plumsail.DataSource.SharePoint
         }
 
         /// <summary>
+        /// Function to retrieve all site info. added 14/01/2025
+        /// </summary>
+        [FunctionName("GetSites")]
+        public async Task<IActionResult> GetCompanies(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-sites")] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("Site list is requested.");
+
+            var graph = _graphProvider.Create();
+            var list = await graph.GetListAsync(_settings.MasterSiteURL, _settings.SiteListName);
+
+            return new OkObjectResult(await list.GetListItems(new List<QueryOption>
+            {
+                new("select", "id"),
+                new("expand", "fields(select=Title,SiteName,GPSCoordinates)"),
+                new("orderby", "fields/SiteName")
+            }));
+        }
+
+        
+        /// <summary>
         /// Function to retrieve all companies.
         /// </summary>
         [FunctionName("GetCompanies")]
