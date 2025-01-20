@@ -27,7 +27,9 @@ namespace Plumsail.DataSource.SharePoint
         /// <summary>
         /// Function to retrieve all site info. added 14/01/2025
         /// </summary>
-        [FunctionName("GetSites")]
+        try {
+    // Code that might throw an error
+    let result =  [FunctionName("GetSites")]
         public async Task<IActionResult> GetSites(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-sites")] HttpRequest req,
             ILogger log)
@@ -44,6 +46,12 @@ namespace Plumsail.DataSource.SharePoint
                 new("orderby", "fields/SiteName")
             }));
         }
+        
+        console.log(result);
+    } catch (error) {
+        // Handle the error here
+        console.error("GetSites error occurred: ", error);
+    };
 
         
         /// <summary>
