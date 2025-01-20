@@ -29,7 +29,7 @@ namespace Plumsail.DataSource.SharePoint
         /// </summary>
         try {
     // Code that might throw an error
-    let result =  [FunctionName("GetSites")]
+    let result =  [FunctionName("GetSites")];
         public async Task<IActionResult> GetSites(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-sites")] HttpRequest req,
             ILogger log)
