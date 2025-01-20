@@ -17,9 +17,7 @@ namespace Plumsail.DataSource.SharePoint
     {
         private readonly Settings.ListData _settings;
         private readonly GraphServiceClientProvider _graphProvider;
- try {
-    // Code that might throw an error
-    let result =  
+
         public ListData(IOptions<AppSettings> settings, GraphServiceClientProvider graphProvider)
         {
             _settings = settings.Value.ListData;
@@ -29,7 +27,7 @@ namespace Plumsail.DataSource.SharePoint
         /// <summary>
         /// Function to retrieve all site info. added 14/01/2025
         /// </summary>
-       [FunctionName("GetSites")]
+        [FunctionName("GetSites")]
         public async Task<IActionResult> GetSites(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "all-sites")] HttpRequest req,
             ILogger log)
@@ -46,8 +44,6 @@ namespace Plumsail.DataSource.SharePoint
                 new("orderby", "fields/SiteName")
             }));
         }
-        
-
 
         
         /// <summary>
@@ -142,10 +138,4 @@ namespace Plumsail.DataSource.SharePoint
             return new OkObjectResult(listItems.DistinctBy(i => i.Fields.AdditionalData["Title"]));
         }
     }
-        console.log(result);
-    } catch (error) {
-        // Handle the error here
-        console.error("GetSites error occurred: ", error);
-    };
-        
 }
