@@ -34,15 +34,25 @@ namespace Plumsail.DataSource.SharePoint
         {
             log.LogInformation("Site list is requested.");
 
-            var graph = _graphProvider.Create();
-            var list = await graph.GetListAsync(_settings.MasterSiteURL, _settings.SiteListName);
-
-            return new OkObjectResult(await list.GetListItems(new List<QueryOption>
+            try
             {
-                new("select", "id"),
-                new("expand", "fields(select=SiteName,GPSCoordinates)"),
-                new("orderby", "fields/SiteName")
-            }));
+                var graph = _graphProvider.Create();
+                var list = await graph.GetListAsync(_settings.MasterSiteURL, _settings.SiteListName);
+
+                var result = await list.GetListItems(new List<QueryOption>
+                {
+                    new("select", "id"),
+                    new("expand", "fields(select=SiteName,GPSCoordinates)"),
+                    new("orderby", "fields/SiteName")
+                });
+
+                return new OkObjectResult(result);
+            }
+            catch (System.Exception ex)
+            {
+                log.LogError($"Error retrieving site list: {ex.Message}", ex);
+                return new StatusCodeResult(500); // Internal Server Error
+            }
         }
 
         
