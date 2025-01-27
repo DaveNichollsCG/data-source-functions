@@ -43,7 +43,7 @@ namespace Plumsail.DataSource.SharePoint
                 {
                     new("select", "id"),
                     new("expand", "fields(select=SiteName,GPSCoordinates)"),
-                    new("filter", "fields/SentryEnabled eq true"),
+                    new("filter", $"fields/SentryEnabled eq 1"),
                     new("orderby", "fields/SiteName")
                 });
 
